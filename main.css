@@ -126,3 +126,21 @@ button:hover {
 .todo-list {
   margin-bottom: 20px;
 }
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: small;
+  white-space: pre;
+}
+
+.text {
+  padding: 5px 15px;
+  box-sizing: border-box;
+  border: 1px solid;
+  border-radius: 20px;
+  opacity: 0.8;
+  color: #fff;
+}
