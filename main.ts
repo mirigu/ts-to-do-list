@@ -29,6 +29,10 @@ interface Todo {
 
 let toDoList: Todo[] = JSON.parse(localStorage.getItem('TODO') ?? '[]');
 
+let deletedToDoList: Todo[] = JSON.parse(
+  localStorage.getItem('DELETE_TODO') ?? '[]'
+);
+
 // 탭 클릭시 실행되는 함수
 const handleTabClick = (event: MouseEvent): void => {
   const tabTarget = <HTMLLIElement>event.target;
@@ -92,6 +96,25 @@ const saveTodo = () => {
   localStorage.setItem('TODO', JSON.stringify(toDoList));
 };
 
+// 로컬스토리지에 삭제된 할 일을 저장하는 함수
+const saveDeletedTodo = () => {
+  localStorage.setItem('DELETE_TODO', JSON.stringify(deletedToDoList));
+};
+
+// 할 일 단일 삭제 함수
+const deleteTodo = (id: string) => {
+  toDoList = toDoList.filter((todo: Todo) => {
+    if (todo.id === Number(id)) {
+      deletedToDoList.push(todo);
+      return saveDeletedTodo();
+    }
+    return todo.id !== Number(id);
+  });
+
+  saveTodo();
+  addTodoList();
+};
+
 const createTodo = (newTodo: Todo): HTMLDivElement => {
   let todo = <HTMLDivElement>document.createElement('div');
 
@@ -116,6 +139,26 @@ const createTodo = (newTodo: Todo): HTMLDivElement => {
     checkbox.addEventListener('change', () => handleCheckChange(todo.id));
   });
 
+  todo.querySelectorAll('button').forEach((button: HTMLButtonElement): void => {
+    if (button.className === 'delete-button') {
+      return button.addEventListener('click', () => deleteTodo(todo.id));
+    }
+  });
+
+  return todo;
+};
+
+const deletedTodo = (item: Todo) => {
+  let todo: HTMLDivElement = document.createElement('div');
+
+  const content = `
+  <span class='text' style='background-color:${item.label};'>${item.text}</span>
+  <span>${item.createAt}</span>
+  `;
+
+  todo.className = 'content';
+  todo.innerHTML = content;
+
   return todo;
 };
 
@@ -133,6 +176,12 @@ const addTodoList = () => {
   completed.forEach((item) => {
     const todo = createTodo(item);
     completedList.appendChild(todo);
+  });
+
+  deletedList.innerHTML = '';
+  deletedToDoList.forEach((item) => {
+    const todo = deletedTodo(item);
+    deletedList.appendChild(todo);
   });
 };
 

@@ -1,4 +1,4 @@
-var _a;
+var _a, _b;
 var tabItem = (document.querySelectorAll('.tab-item'));
 var tabContent = (document.querySelectorAll('.tab-content'));
 var form = document.querySelector('.form-container');
@@ -9,6 +9,7 @@ var completedList = document.querySelector('.completed-list');
 var deletedList = document.querySelector('.deleted-list');
 var completeDeletedBtn = (document.querySelector('.completed-delete-button'));
 var toDoList = JSON.parse((_a = localStorage.getItem('TODO')) !== null && _a !== void 0 ? _a : '[]');
+var deletedToDoList = JSON.parse((_b = localStorage.getItem('DELETE_TODO')) !== null && _b !== void 0 ? _b : '[]');
 // 탭 클릭시 실행되는 함수
 var handleTabClick = function (event) {
     var _a;
@@ -60,6 +61,22 @@ var handleCheckChange = function (id) {
 var saveTodo = function () {
     localStorage.setItem('TODO', JSON.stringify(toDoList));
 };
+// 로컬스토리지에 삭제된 할 일을 저장하는 함수
+var saveDeletedTodo = function () {
+    localStorage.setItem('DELETE_TODO', JSON.stringify(deletedToDoList));
+};
+// 할 일 단일 삭제 함수
+var deleteTodo = function (id) {
+    toDoList = toDoList.filter(function (todo) {
+        if (todo.id === Number(id)) {
+            deletedToDoList.push(todo);
+            return saveDeletedTodo();
+        }
+        return todo.id !== Number(id);
+    });
+    saveTodo();
+    addTodoList();
+};
 var createTodo = function (newTodo) {
     var todo = document.createElement('div');
     var content = "\n    <input class='checkbox' type='checkbox' ".concat(newTodo.completed ? 'checked' : '', " />\n    <span class='text' style='background-color:").concat(newTodo.label, ";'>").concat(newTodo.text, "</span>\n    <span>(\uB4F1\uB85D) ").concat(newTodo.createAt, "</span>\n    ").concat(newTodo.update ? "<span>(\uC218\uC815) ".concat(newTodo.updateAt, "</span>") : '', "\n    <button class='update-button'>\uC218\uC815</button>\n    <button class='delete-button'>\uC0AD\uC81C</button>\n  ");
@@ -69,6 +86,18 @@ var createTodo = function (newTodo) {
     todo.querySelectorAll('input').forEach(function (checkbox) {
         checkbox.addEventListener('change', function () { return handleCheckChange(todo.id); });
     });
+    todo.querySelectorAll('button').forEach(function (button) {
+        if (button.className === 'delete-button') {
+            return button.addEventListener('click', function () { return deleteTodo(todo.id); });
+        }
+    });
+    return todo;
+};
+var deletedTodo = function (item) {
+    var todo = document.createElement('div');
+    var content = "\n  <span class='text' style='background-color:".concat(item.label, ";'>").concat(item.text, "</span>\n  <span>").concat(item.createAt, "</span>\n  ");
+    todo.className = 'content';
+    todo.innerHTML = content;
     return todo;
 };
 var addTodoList = function () {
@@ -83,6 +112,11 @@ var addTodoList = function () {
     completed.forEach(function (item) {
         var todo = createTodo(item);
         completedList.appendChild(todo);
+    });
+    deletedList.innerHTML = '';
+    deletedToDoList.forEach(function (item) {
+        var todo = deletedTodo(item);
+        deletedList.appendChild(todo);
     });
 };
 // 추가 버튼 클릭시 실행되는 함수
