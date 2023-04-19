@@ -88,7 +88,7 @@ const handleCheckChange = (id: string): void => {
   });
 
   saveTodo();
-  addTodoList();
+  renderTodoList();
 };
 
 // 로컬스토리지에 할 일을 저장하는 함수
@@ -112,10 +112,11 @@ const deleteTodo = (id: string) => {
   });
 
   saveTodo();
-  addTodoList();
+  renderTodoList();
 };
 
-const createTodo = (newTodo: Todo): HTMLDivElement => {
+// 새로운 할 일 요소 생성하는 함수
+const createTodoElement = (newTodo: Todo): HTMLDivElement => {
   let todo = <HTMLDivElement>document.createElement('div');
 
   const content: string = `
@@ -148,7 +149,8 @@ const createTodo = (newTodo: Todo): HTMLDivElement => {
   return todo;
 };
 
-const deletedTodo = (item: Todo) => {
+// 새로운 삭제된 할 일 요소 생성하는 함수
+const deletedTodoElement = (item: Todo) => {
   let todo: HTMLDivElement = document.createElement('div');
 
   const content = `
@@ -162,25 +164,26 @@ const deletedTodo = (item: Todo) => {
   return todo;
 };
 
-const addTodoList = () => {
+// 할 일 목록을 갱신하는 함수
+const renderTodoList = () => {
   const incomplete = toDoList.filter((item) => !item.completed);
   const completed = toDoList.filter((item) => item.completed);
 
   todoList.innerHTML = '';
   incomplete.forEach((item) => {
-    const todo = createTodo(item);
+    const todo = createTodoElement(item);
     todoList.appendChild(todo);
   });
 
   completedList.innerHTML = '';
   completed.forEach((item) => {
-    const todo = createTodo(item);
+    const todo = createTodoElement(item);
     completedList.appendChild(todo);
   });
 
   deletedList.innerHTML = '';
   deletedToDoList.forEach((item) => {
-    const todo = deletedTodo(item);
+    const todo = deletedTodoElement(item);
     deletedList.appendChild(todo);
   });
 };
@@ -205,7 +208,7 @@ const handleSubmit = (event: SubmitEvent): void => {
   toDoList.push(newTodo);
 
   saveTodo();
-  addTodoList();
+  renderTodoList();
 
   formInput.value = '';
   formLabel.value = '#000000';
@@ -217,4 +220,4 @@ tabItem.forEach((tab: HTMLLIElement): void => {
 
 form.addEventListener('submit', handleSubmit);
 
-window.addEventListener('DOMContentLoaded', addTodoList);
+window.addEventListener('DOMContentLoaded', renderTodoList);

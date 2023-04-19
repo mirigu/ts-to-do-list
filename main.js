@@ -55,7 +55,7 @@ var handleCheckChange = function (id) {
         }
     });
     saveTodo();
-    addTodoList();
+    renderTodoList();
 };
 // 로컬스토리지에 할 일을 저장하는 함수
 var saveTodo = function () {
@@ -75,9 +75,10 @@ var deleteTodo = function (id) {
         return todo.id !== Number(id);
     });
     saveTodo();
-    addTodoList();
+    renderTodoList();
 };
-var createTodo = function (newTodo) {
+// 새로운 할 일 요소 생성하는 함수
+var createTodoElement = function (newTodo) {
     var todo = document.createElement('div');
     var content = "\n    <input class='checkbox' type='checkbox' ".concat(newTodo.completed ? 'checked' : '', " />\n    <span class='text' style='background-color:").concat(newTodo.label, ";'>").concat(newTodo.text, "</span>\n    <span>(\uB4F1\uB85D) ").concat(newTodo.createAt, "</span>\n    ").concat(newTodo.update ? "<span>(\uC218\uC815) ".concat(newTodo.updateAt, "</span>") : '', "\n    <button class='update-button'>\uC218\uC815</button>\n    <button class='delete-button'>\uC0AD\uC81C</button>\n  ");
     todo.className = 'content';
@@ -93,29 +94,31 @@ var createTodo = function (newTodo) {
     });
     return todo;
 };
-var deletedTodo = function (item) {
+// 새로운 삭제된 할 일 요소 생성하는 함수
+var deletedTodoElement = function (item) {
     var todo = document.createElement('div');
     var content = "\n  <span class='text' style='background-color:".concat(item.label, ";'>").concat(item.text, "</span>\n  <span>").concat(item.createAt, "</span>\n  ");
     todo.className = 'content';
     todo.innerHTML = content;
     return todo;
 };
-var addTodoList = function () {
+// 할 일 목록을 갱신하는 함수
+var renderTodoList = function () {
     var incomplete = toDoList.filter(function (item) { return !item.completed; });
     var completed = toDoList.filter(function (item) { return item.completed; });
     todoList.innerHTML = '';
     incomplete.forEach(function (item) {
-        var todo = createTodo(item);
+        var todo = createTodoElement(item);
         todoList.appendChild(todo);
     });
     completedList.innerHTML = '';
     completed.forEach(function (item) {
-        var todo = createTodo(item);
+        var todo = createTodoElement(item);
         completedList.appendChild(todo);
     });
     deletedList.innerHTML = '';
     deletedToDoList.forEach(function (item) {
-        var todo = deletedTodo(item);
+        var todo = deletedTodoElement(item);
         deletedList.appendChild(todo);
     });
 };
@@ -135,7 +138,7 @@ var handleSubmit = function (event) {
     };
     toDoList.push(newTodo);
     saveTodo();
-    addTodoList();
+    renderTodoList();
     formInput.value = '';
     formLabel.value = '#000000';
 };
@@ -143,4 +146,4 @@ tabItem.forEach(function (tab) {
     tab.addEventListener('click', handleTabClick);
 });
 form.addEventListener('submit', handleSubmit);
-window.addEventListener('DOMContentLoaded', addTodoList);
+window.addEventListener('DOMContentLoaded', renderTodoList);
