@@ -122,6 +122,14 @@ var renderTodoList = function () {
         deletedList.appendChild(todo);
     });
 };
+// 중복되지 않는 id 값을 생성하기 위한 함수
+var getId = function () {
+    var _a;
+    var id = Number((_a = localStorage.getItem('id')) !== null && _a !== void 0 ? _a : 0);
+    id++;
+    localStorage.setItem('id', id.toString());
+    return id;
+};
 // 추가 버튼 클릭시 실행되는 함수
 var handleSubmit = function (event) {
     event.preventDefault();
@@ -129,7 +137,7 @@ var handleSubmit = function (event) {
         return alert('글자수를 확인해주세요.');
     }
     var newTodo = {
-        id: toDoList.length + 1,
+        id: getId(),
         text: formInput.value,
         label: formLabel.value,
         createAt: dateFormat(new Date()),

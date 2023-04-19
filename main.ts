@@ -188,6 +188,16 @@ const renderTodoList = () => {
   });
 };
 
+// 중복되지 않는 id 값을 생성하기 위한 함수
+const getId = (): number => {
+  let id = Number(localStorage.getItem('id') ?? 0);
+  id++;
+
+  localStorage.setItem('id', id.toString());
+
+  return id;
+};
+
 // 추가 버튼 클릭시 실행되는 함수
 const handleSubmit = (event: SubmitEvent): void => {
   event.preventDefault();
@@ -197,7 +207,7 @@ const handleSubmit = (event: SubmitEvent): void => {
   }
 
   const newTodo: Todo = {
-    id: toDoList.length + 1,
+    id: getId(),
     text: formInput.value,
     label: formLabel.value,
     createAt: dateFormat(new Date()),
