@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TO DO LIST</title>
+    <link href="main.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <h2>TS TO DO LIST(HTML + TS)</h2>
+    </header>
+    <main class="container">
+      <!-- 할 일 입력창 -->
+      <section>
+        <form class="form-container">
+          <input
+            class="form-input"
+            autofocus
+            maxlength="20"
+            type="text"
+            placeholder="할 일을 입력해주세요."
+          />
+          <input class="form-label" type="color" value="#000000" />
+          <button type="submit">추가</button>
+        </form>
+      </section>
+
+      <!-- 할 일, 삭제된 할 일 목록 -->
+      <section>
+        <!-- 탭 -->
+        <ul class="tab-container">
+          <li class="tab-item active" data-tab="tab1">할 일</li>
+          <li class="tab-item" data-tab="tab2">삭제된 할 일</li>
+        </ul>
+
+        <!-- 할 일 + 완료된 할 일 리스트 -->
+        <article id="tab1" class="tab-content target">
+          <div class="title-wrap">
+            <!-- 힐 일 리스트 -->
+            <h4>할 일</h4>
+            <div class="button-wrap">
+              <button class="all-delete-button">전체 삭제</button>
+              <button class="completed-delete-button">완료된 항목 삭제</button>
+            </div>
+          </div>
+          <div class="todo-list"></div>
+          <!-- 완료된 할 일 리스트 -->
+          <div class="title-wrap">
+            <h4>완료된 할 일</h4>
+          </div>
+          <div class="completed-list"></div>
+        </article>
+
+        <!-- 삭제된 할 일 리스트 -->
+        <article id="tab2" class="tab-content">
+          <div class="title-wrap">
+            <h4>삭제된 할 일</h4>
+          </div>
+          <div class="deleted-list"></div>
+        </article>
+      </section>
+    </main>
+    <script src="main.js"></script>
+  </body>
+</html>
