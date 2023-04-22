@@ -165,15 +165,17 @@ const updateTodo = (e: Event, todo: HTMLDivElement, id: string): void => {
 
 // 할 일 단일 삭제 함수
 const deleteTodo = (id: string) => {
-  toDoList = toDoList.filter((todo: Todo) => {
+  const newTodoList: Todo[] = toDoList.filter((todo: Todo) => {
     if (todo.id === Number(id)) {
       deletedToDoList.push(todo);
-      return saveDeletedTodo();
     }
     return todo.id !== Number(id);
   });
 
+  toDoList = newTodoList;
+
   saveTodo();
+  saveDeletedTodo();
   renderTodoList();
 };
 

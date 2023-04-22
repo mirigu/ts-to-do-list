@@ -110,14 +110,15 @@ var updateTodo = function (e, todo, id) {
 };
 // 할 일 단일 삭제 함수
 var deleteTodo = function (id) {
-    toDoList = toDoList.filter(function (todo) {
+    var newTodoList = toDoList.filter(function (todo) {
         if (todo.id === Number(id)) {
             deletedToDoList.push(todo);
-            return saveDeletedTodo();
         }
         return todo.id !== Number(id);
     });
+    toDoList = newTodoList;
     saveTodo();
+    saveDeletedTodo();
     renderTodoList();
 };
 // 새로운 할 일 요소 생성하는 함수
