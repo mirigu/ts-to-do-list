@@ -1,3 +1,14 @@
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var _a, _b;
 var tabItem = (document.querySelectorAll('.tab-item'));
 var tabContent = (document.querySelectorAll('.tab-content'));
@@ -65,6 +76,34 @@ var saveTodo = function () {
 var saveDeletedTodo = function () {
     localStorage.setItem('DELETE_TODO', JSON.stringify(deletedToDoList));
 };
+// 할 일 수정 후 저장시 실행되는 함수
+var handleEditSubmit = function (e, id) {
+    e.preventDefault();
+    var editInput = document.querySelector('.edit-input');
+    var editLabel = document.querySelector('.edit-label');
+    toDoList = toDoList.map(function (item) {
+        return item.id === Number(id)
+            ? __assign(__assign({}, item), { text: editInput.value, label: editLabel.value, update: true, updateAt: dateFormat(new Date()) }) : item;
+    });
+    saveTodo();
+    renderTodoList();
+};
+// 할 일을 수정하지 않고 취소 버튼을 클릭할 경우 실행되는 함수
+var handleEditCancel = function (e) {
+    e.preventDefault();
+    renderTodoList();
+};
+// 할 일 수정하는 함수
+var updateTodo = function (e, todo, id) {
+    var editToDo = toDoList.find(function (item) { return item.id === Number(id); });
+    if (!editToDo)
+        return;
+    todo.innerHTML = "<form class='edit-form'>\n    <input type='checkbox' ".concat(editToDo.completed ? 'checked' : '', " />\n    <input class='edit-input' value=").concat(editToDo.text, " />\n    <input class='edit-label' type='color' value=").concat(editToDo.label, " /> \n    <button class='edit-button' type='submit'>\uC800\uC7A5</button>\n    <button class='cancel-button'>\uCDE8\uC18C</button>\n    </form>\n    ");
+    var editForm = document.querySelector('.edit-form');
+    var cancelButton = (editForm.querySelector('.cancel-button'));
+    editForm.addEventListener('submit', function (e) { return handleEditSubmit(e, id); });
+    cancelButton.addEventListener('click', function (e) { return handleEditCancel(e); });
+};
 // 할 일 단일 삭제 함수
 var deleteTodo = function (id) {
     toDoList = toDoList.filter(function (todo) {
@@ -90,6 +129,11 @@ var createTodoElement = function (newTodo) {
     todo.querySelectorAll('button').forEach(function (button) {
         if (button.className === 'delete-button') {
             return button.addEventListener('click', function () { return deleteTodo(todo.id); });
+        }
+        if (button.className === 'update-button') {
+            return button.addEventListener('click', function (e) {
+                updateTodo(e, todo, todo.id);
+            });
         }
     });
     return todo;
@@ -131,8 +175,8 @@ var getId = function () {
     return id;
 };
 // 추가 버튼 클릭시 실행되는 함수
-var handleSubmit = function (event) {
-    event.preventDefault();
+var handleSubmit = function (e) {
+    e.preventDefault();
     if (formInput.value.length < 1 || formInput.value.length > 20) {
         return alert('글자수를 확인해주세요.');
     }

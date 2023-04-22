@@ -101,6 +101,62 @@ const saveDeletedTodo = () => {
   localStorage.setItem('DELETE_TODO', JSON.stringify(deletedToDoList));
 };
 
+// 할 일 수정 후 저장시 실행되는 함수
+const handleEditSubmit = (e: SubmitEvent, id: string): void => {
+  e.preventDefault();
+
+  const editInput = <HTMLInputElement>document.querySelector('.edit-input');
+  const editLabel = <HTMLInputElement>document.querySelector('.edit-label');
+
+  toDoList = toDoList.map((item) => {
+    return item.id === Number(id)
+      ? {
+          ...item,
+          text: editInput.value,
+          label: editLabel.value,
+          update: true,
+          updateAt: dateFormat(new Date()),
+        }
+      : item;
+  });
+
+  saveTodo();
+  renderTodoList();
+};
+
+// 할 일을 수정하지 않고 취소 버튼을 클릭할 경우 실행되는 함수
+const handleEditCancel = (e: MouseEvent) => {
+  e.preventDefault();
+
+  renderTodoList();
+};
+
+// 할 일 수정하는 함수
+const updateTodo = (e: Event, todo: HTMLDivElement, id: string): void => {
+  const editToDo = toDoList.find((item: Todo) => item.id === Number(id));
+
+  if (!editToDo) return;
+
+  todo.innerHTML = `<form class='edit-form'>
+    <input type='checkbox' ${editToDo.completed ? 'checked' : ''} />
+    <input class='edit-input' value=${editToDo.text} />
+    <input class='edit-label' type='color' value=${editToDo.label} /> 
+    <button class='edit-button' type='submit'>저장</button>
+    <button class='cancel-button'>취소</button>
+    </form>
+    `;
+
+  const editForm = <HTMLFormElement>document.querySelector('.edit-form');
+
+  const cancelButton = <HTMLButtonElement>(
+    editForm.querySelector('.cancel-button')
+  );
+
+  editForm.addEventListener('submit', (e) => handleEditSubmit(e, id));
+
+  cancelButton.addEventListener('click', (e) => handleEditCancel(e));
+};
+
 // 할 일 단일 삭제 함수
 const deleteTodo = (id: string) => {
   toDoList = toDoList.filter((todo: Todo) => {
@@ -143,6 +199,11 @@ const createTodoElement = (newTodo: Todo): HTMLDivElement => {
   todo.querySelectorAll('button').forEach((button: HTMLButtonElement): void => {
     if (button.className === 'delete-button') {
       return button.addEventListener('click', () => deleteTodo(todo.id));
+    }
+    if (button.className === 'update-button') {
+      return button.addEventListener('click', (e) => {
+        updateTodo(e, todo, todo.id);
+      });
     }
   });
 
@@ -199,8 +260,8 @@ const getId = (): number => {
 };
 
 // 추가 버튼 클릭시 실행되는 함수
-const handleSubmit = (event: SubmitEvent): void => {
-  event.preventDefault();
+const handleSubmit = (e: SubmitEvent): void => {
+  e.preventDefault();
 
   if (formInput.value.length < 1 || formInput.value.length > 20) {
     return alert('글자수를 확인해주세요.');
