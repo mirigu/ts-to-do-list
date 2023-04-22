@@ -165,18 +165,24 @@ const updateTodo = (e: Event, todo: HTMLDivElement, id: string): void => {
 
 // 할 일 단일 삭제 함수
 const deleteTodo = (id: string) => {
-  const newTodoList: Todo[] = toDoList.filter((todo: Todo) => {
-    if (todo.id === Number(id)) {
-      deletedToDoList.push(todo);
-    }
-    return todo.id !== Number(id);
-  });
+  if (confirm('할 일이 삭제됩니다. 정말 삭제하시겠습니까?')) {
+    const newTodoList: Todo[] = toDoList.filter((todo: Todo) => {
+      if (todo.id === Number(id)) {
+        deletedToDoList.push(todo);
+      }
+      return todo.id !== Number(id);
+    });
 
-  toDoList = newTodoList;
+    toDoList = newTodoList;
 
-  saveTodo();
-  saveDeletedTodo();
-  renderTodoList();
+    saveTodo();
+    saveDeletedTodo();
+    renderTodoList();
+
+    return;
+  }
+
+  return;
 };
 
 // 새로운 할 일 요소 생성하는 함수
@@ -289,6 +295,8 @@ const handleSubmit = (e: SubmitEvent): void => {
   };
 
   toDoList.push(newTodo);
+
+  alert('등록이 완료되었습니다.');
 
   saveTodo();
   renderTodoList();
