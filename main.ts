@@ -60,14 +60,14 @@ const dateFormat = (date: Date): string => {
     return num;
   };
 
-  const [year, month, day] = [
+  const [year, month, day]: (string | number)[] = [
     // 연도, 월, 일
     date.getFullYear(),
     prependZero(date.getMonth() + 1),
     prependZero(date.getDay()),
   ];
 
-  const [hour, minutes, seconds] = [
+  const [hour, minutes, seconds]: (string | number)[] = [
     // 시, 분, 초
     prependZero(date.getHours()),
     prependZero(date.getMinutes()),
@@ -106,7 +106,7 @@ const handleEditSubmit = (e: SubmitEvent, id: string): void => {
   const editInput = <HTMLInputElement>document.querySelector('.edit-input');
   const editLabel = <HTMLInputElement>document.querySelector('.edit-label');
 
-  toDoList = toDoList.map((item: Todo) => {
+  const updatedTodoList: Todo[] = toDoList.map((item: Todo) => {
     return item.id === Number(id)
       ? {
           ...item,
@@ -117,6 +117,8 @@ const handleEditSubmit = (e: SubmitEvent, id: string): void => {
         }
       : item;
   });
+
+  toDoList = updatedTodoList;
 
   saveTodo();
   renderTodoList();
@@ -178,25 +180,30 @@ const deleteTodo = (id: string) => {
 };
 
 // 새로운 할 일 요소 생성하는 함수
-const createTodoElement = (newTodo: Todo): HTMLDivElement => {
+const createTodoElement = ({
+  id,
+  text,
+  label,
+  createAt,
+  completed,
+  update,
+  updateAt,
+}: Todo): HTMLDivElement => {
   let todo = <HTMLDivElement>document.createElement('div');
 
-  const content: string = `
-    <input class='checkbox' type='checkbox' ${
-      newTodo.completed ? 'checked' : ''
-    } />
-    <span class='text' style='background-color:${newTodo.label};'>${
-    newTodo.text
-  }</span>
-    <span>(등록) ${newTodo.createAt}</span>
-    ${newTodo.update ? `<span>(수정) ${newTodo.updateAt}</span>` : ''}
+  const isCompleted: string = completed ? 'checked' : '';
+
+  todo.innerHTML = `
+    <input class='checkbox' type='checkbox' ${isCompleted} />
+    <span class='text' style='background-color:${label};'>${text}</span>
+    <span>(등록) ${createAt}</span>
+    ${update ? `<span>(수정) ${updateAt}</span>` : ''}
     <button class='update-button'>수정</button>
     <button class='delete-button'>삭제</button>
   `;
 
   todo.className = 'content';
-  todo.innerHTML = content;
-  todo.id = newTodo.id.toString();
+  todo.id = id.toString();
 
   todo.querySelectorAll('input').forEach((checkbox: HTMLInputElement): void => {
     checkbox.addEventListener('change', (): void => handleCheckChange(todo.id));
@@ -220,13 +227,12 @@ const createTodoElement = (newTodo: Todo): HTMLDivElement => {
 const deletedTodoElement = (item: Todo): HTMLDivElement => {
   let todo = <HTMLDivElement>document.createElement('div');
 
-  const content: string = `
+  todo.innerHTML = `
   <span class='text' style='background-color:${item.label};'>${item.text}</span>
   <span>${item.createAt}</span>
   `;
 
   todo.className = 'content';
-  todo.innerHTML = content;
 
   return todo;
 };

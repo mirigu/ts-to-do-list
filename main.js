@@ -81,10 +81,11 @@ var handleEditSubmit = function (e, id) {
     e.preventDefault();
     var editInput = document.querySelector('.edit-input');
     var editLabel = document.querySelector('.edit-label');
-    toDoList = toDoList.map(function (item) {
+    var updatedTodoList = toDoList.map(function (item) {
         return item.id === Number(id)
             ? __assign(__assign({}, item), { text: editInput.value, label: editLabel.value, update: true, updateAt: dateFormat(new Date()) }) : item;
     });
+    toDoList = updatedTodoList;
     saveTodo();
     renderTodoList();
 };
@@ -122,12 +123,13 @@ var deleteTodo = function (id) {
     renderTodoList();
 };
 // 새로운 할 일 요소 생성하는 함수
-var createTodoElement = function (newTodo) {
+var createTodoElement = function (_a) {
+    var id = _a.id, text = _a.text, label = _a.label, createAt = _a.createAt, completed = _a.completed, update = _a.update, updateAt = _a.updateAt;
     var todo = document.createElement('div');
-    var content = "\n    <input class='checkbox' type='checkbox' ".concat(newTodo.completed ? 'checked' : '', " />\n    <span class='text' style='background-color:").concat(newTodo.label, ";'>").concat(newTodo.text, "</span>\n    <span>(\uB4F1\uB85D) ").concat(newTodo.createAt, "</span>\n    ").concat(newTodo.update ? "<span>(\uC218\uC815) ".concat(newTodo.updateAt, "</span>") : '', "\n    <button class='update-button'>\uC218\uC815</button>\n    <button class='delete-button'>\uC0AD\uC81C</button>\n  ");
+    var isCompleted = completed ? 'checked' : '';
+    todo.innerHTML = "\n    <input class='checkbox' type='checkbox' ".concat(isCompleted, " />\n    <span class='text' style='background-color:").concat(label, ";'>").concat(text, "</span>\n    <span>(\uB4F1\uB85D) ").concat(createAt, "</span>\n    ").concat(update ? "<span>(\uC218\uC815) ".concat(updateAt, "</span>") : '', "\n    <button class='update-button'>\uC218\uC815</button>\n    <button class='delete-button'>\uC0AD\uC81C</button>\n  ");
     todo.className = 'content';
-    todo.innerHTML = content;
-    todo.id = newTodo.id.toString();
+    todo.id = id.toString();
     todo.querySelectorAll('input').forEach(function (checkbox) {
         checkbox.addEventListener('change', function () { return handleCheckChange(todo.id); });
     });
@@ -146,9 +148,8 @@ var createTodoElement = function (newTodo) {
 // 새로운 삭제된 할 일 요소 생성하는 함수
 var deletedTodoElement = function (item) {
     var todo = document.createElement('div');
-    var content = "\n  <span class='text' style='background-color:".concat(item.label, ";'>").concat(item.text, "</span>\n  <span>").concat(item.createAt, "</span>\n  ");
+    todo.innerHTML = "\n  <span class='text' style='background-color:".concat(item.label, ";'>").concat(item.text, "</span>\n  <span>").concat(item.createAt, "</span>\n  ");
     todo.className = 'content';
-    todo.innerHTML = content;
     return todo;
 };
 // 할 일 목록을 갱신하는 함수
