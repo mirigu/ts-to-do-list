@@ -13,9 +13,7 @@ const todoList = <HTMLDivElement>document.querySelector('.todo-list');
 const completedList = <HTMLDivElement>document.querySelector('.completed-list');
 const deletedList = <HTMLDivElement>document.querySelector('.deleted-list');
 
-const completeDeletedBtn = <HTMLDivElement>(
-  document.querySelector('.completed-delete-button')
-);
+const buttonBox = <HTMLDivElement>document.querySelector('.delete-button-box');
 
 interface Todo {
   id: number;
@@ -201,7 +199,7 @@ const createTodoElement = (newTodo: Todo): HTMLDivElement => {
   todo.id = newTodo.id.toString();
 
   todo.querySelectorAll('input').forEach((checkbox: HTMLInputElement): void => {
-    checkbox.addEventListener('change', () => handleCheckChange(todo.id));
+    checkbox.addEventListener('change', (): void => handleCheckChange(todo.id));
   });
 
   todo.querySelectorAll('button').forEach((button: HTMLButtonElement): void => {
@@ -235,23 +233,23 @@ const deletedTodoElement = (item: Todo): HTMLDivElement => {
 
 // 할 일 목록을 갱신하는 함수
 const renderTodoList = (): void => {
-  const incomplete: Todo[] = toDoList.filter((item) => !item.completed);
-  const completed: Todo[] = toDoList.filter((item) => item.completed);
+  const incomplete: Todo[] = toDoList.filter((item: Todo) => !item.completed);
+  const completed: Todo[] = toDoList.filter((item: Todo) => item.completed);
 
   todoList.innerHTML = '';
-  incomplete.forEach((item: Todo) => {
+  incomplete.forEach((item: Todo): void => {
     const todo: HTMLDivElement = createTodoElement(item);
     todoList.appendChild(todo);
   });
 
   completedList.innerHTML = '';
-  completed.forEach((item: Todo) => {
+  completed.forEach((item: Todo): void => {
     const todo: HTMLDivElement = createTodoElement(item);
     completedList.appendChild(todo);
   });
 
   deletedList.innerHTML = '';
-  deletedToDoList.forEach((item: Todo) => {
+  deletedToDoList.forEach((item: Todo): void => {
     const todo: HTMLDivElement = deletedTodoElement(item);
     deletedList.appendChild(todo);
   });
@@ -293,10 +291,37 @@ const handleSubmit = (e: SubmitEvent): void => {
   formLabel.value = '#000000';
 };
 
+// 할일 목록을 전체 삭제하는 함수
+const deleteAllTodoList = (): void => {
+  if (toDoList.length < 1) return alert('삭제할 할 일이 없습니다.');
+
+  if (confirm('할 일 목록이 전체 삭제됩니다. 정말 삭제하시겠습니까?')) {
+    toDoList.forEach((todo: Todo) => deletedToDoList.push(todo));
+
+    toDoList = [];
+
+    saveTodo();
+    saveDeletedTodo();
+    renderTodoList();
+
+    return;
+  }
+
+  return;
+};
+
 tabItem.forEach((tab: HTMLLIElement): void => {
   tab.addEventListener('click', handleTabClick);
 });
 
 form.addEventListener('submit', handleSubmit);
+
+buttonBox
+  .querySelectorAll('button')
+  .forEach((button: HTMLButtonElement): void => {
+    if (button.className === 'all-delete-button') {
+      return button.addEventListener('click', deleteAllTodoList);
+    }
+  });
 
 window.addEventListener('DOMContentLoaded', renderTodoList);

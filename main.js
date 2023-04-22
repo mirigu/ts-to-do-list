@@ -18,7 +18,7 @@ var formLabel = document.querySelector('.form-label');
 var todoList = document.querySelector('.todo-list');
 var completedList = document.querySelector('.completed-list');
 var deletedList = document.querySelector('.deleted-list');
-var completeDeletedBtn = (document.querySelector('.completed-delete-button'));
+var buttonBox = document.querySelector('.delete-button-box');
 var toDoList = JSON.parse((_a = localStorage.getItem('TODO')) !== null && _a !== void 0 ? _a : '[]');
 var deletedToDoList = JSON.parse((_b = localStorage.getItem('DELETE_TODO')) !== null && _b !== void 0 ? _b : '[]');
 // 탭 클릭시 실행되는 함수
@@ -199,8 +199,29 @@ var handleSubmit = function (e) {
     formInput.value = '';
     formLabel.value = '#000000';
 };
+// 할일 목록을 전체 삭제하는 함수
+var deleteAllTodoList = function () {
+    if (toDoList.length < 1)
+        return alert('삭제할 할 일이 없습니다.');
+    if (confirm('할 일 목록이 전체 삭제됩니다. 정말 삭제하시겠습니까?')) {
+        toDoList.forEach(function (todo) { return deletedToDoList.push(todo); });
+        toDoList = [];
+        saveTodo();
+        saveDeletedTodo();
+        renderTodoList();
+        return;
+    }
+    return;
+};
 tabItem.forEach(function (tab) {
     tab.addEventListener('click', handleTabClick);
 });
 form.addEventListener('submit', handleSubmit);
+buttonBox
+    .querySelectorAll('button')
+    .forEach(function (button) {
+    if (button.className === 'all-delete-button') {
+        return button.addEventListener('click', deleteAllTodoList);
+    }
+});
 window.addEventListener('DOMContentLoaded', renderTodoList);
