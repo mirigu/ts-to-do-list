@@ -101,8 +101,12 @@ var updateTodo = function (e, todo, id) {
     todo.innerHTML = "<form class='edit-form'>\n    <input type='checkbox' ".concat(editToDo.completed ? 'checked' : '', " />\n    <input class='edit-input' value=").concat(editToDo.text, " />\n    <input class='edit-label' type='color' value=").concat(editToDo.label, " /> \n    <button class='edit-button' type='submit'>\uC800\uC7A5</button>\n    <button class='cancel-button'>\uCDE8\uC18C</button>\n    </form>\n    ");
     var editForm = document.querySelector('.edit-form');
     var cancelButton = (editForm.querySelector('.cancel-button'));
-    editForm.addEventListener('submit', function (e) { return handleEditSubmit(e, id); });
-    cancelButton.addEventListener('click', function (e) { return handleEditCancel(e); });
+    editForm.addEventListener('submit', function (e) {
+        return handleEditSubmit(e, id);
+    });
+    cancelButton.addEventListener('click', function (e) {
+        return handleEditCancel(e);
+    });
 };
 // 할 일 단일 삭제 함수
 var deleteTodo = function (id) {

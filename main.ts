@@ -36,7 +36,7 @@ let deletedToDoList: Todo[] = JSON.parse(
 // 탭 클릭시 실행되는 함수
 const handleTabClick = (event: MouseEvent): void => {
   const tabTarget = <HTMLLIElement>event.target;
-  const target = tabTarget.dataset.tab;
+  const target = tabTarget.dataset.tab as string;
 
   tabItem.forEach((item: HTMLLIElement): void => {
     item.classList.remove('active');
@@ -92,12 +92,12 @@ const handleCheckChange = (id: string): void => {
 };
 
 // 로컬스토리지에 할 일을 저장하는 함수
-const saveTodo = () => {
+const saveTodo = (): void => {
   localStorage.setItem('TODO', JSON.stringify(toDoList));
 };
 
 // 로컬스토리지에 삭제된 할 일을 저장하는 함수
-const saveDeletedTodo = () => {
+const saveDeletedTodo = (): void => {
   localStorage.setItem('DELETE_TODO', JSON.stringify(deletedToDoList));
 };
 
@@ -108,7 +108,7 @@ const handleEditSubmit = (e: SubmitEvent, id: string): void => {
   const editInput = <HTMLInputElement>document.querySelector('.edit-input');
   const editLabel = <HTMLInputElement>document.querySelector('.edit-label');
 
-  toDoList = toDoList.map((item) => {
+  toDoList = toDoList.map((item: Todo) => {
     return item.id === Number(id)
       ? {
           ...item,
@@ -125,7 +125,7 @@ const handleEditSubmit = (e: SubmitEvent, id: string): void => {
 };
 
 // 할 일을 수정하지 않고 취소 버튼을 클릭할 경우 실행되는 함수
-const handleEditCancel = (e: MouseEvent) => {
+const handleEditCancel = (e: MouseEvent): void => {
   e.preventDefault();
 
   renderTodoList();
@@ -133,7 +133,9 @@ const handleEditCancel = (e: MouseEvent) => {
 
 // 할 일 수정하는 함수
 const updateTodo = (e: Event, todo: HTMLDivElement, id: string): void => {
-  const editToDo = toDoList.find((item: Todo) => item.id === Number(id));
+  const editToDo = toDoList.find(
+    (item: Todo) => item.id === Number(id)
+  ) as Todo;
 
   if (!editToDo) return;
 
@@ -152,9 +154,13 @@ const updateTodo = (e: Event, todo: HTMLDivElement, id: string): void => {
     editForm.querySelector('.cancel-button')
   );
 
-  editForm.addEventListener('submit', (e) => handleEditSubmit(e, id));
+  editForm.addEventListener('submit', (e: SubmitEvent): void =>
+    handleEditSubmit(e, id)
+  );
 
-  cancelButton.addEventListener('click', (e) => handleEditCancel(e));
+  cancelButton.addEventListener('click', (e: MouseEvent): void =>
+    handleEditCancel(e)
+  );
 };
 
 // 할 일 단일 삭제 함수
@@ -198,10 +204,10 @@ const createTodoElement = (newTodo: Todo): HTMLDivElement => {
 
   todo.querySelectorAll('button').forEach((button: HTMLButtonElement): void => {
     if (button.className === 'delete-button') {
-      return button.addEventListener('click', () => deleteTodo(todo.id));
+      return button.addEventListener('click', (): void => deleteTodo(todo.id));
     }
     if (button.className === 'update-button') {
-      return button.addEventListener('click', (e) => {
+      return button.addEventListener('click', (e: MouseEvent): void => {
         updateTodo(e, todo, todo.id);
       });
     }
@@ -211,10 +217,10 @@ const createTodoElement = (newTodo: Todo): HTMLDivElement => {
 };
 
 // 새로운 삭제된 할 일 요소 생성하는 함수
-const deletedTodoElement = (item: Todo) => {
-  let todo: HTMLDivElement = document.createElement('div');
+const deletedTodoElement = (item: Todo): HTMLDivElement => {
+  let todo = <HTMLDivElement>document.createElement('div');
 
-  const content = `
+  const content: string = `
   <span class='text' style='background-color:${item.label};'>${item.text}</span>
   <span>${item.createAt}</span>
   `;
@@ -226,32 +232,32 @@ const deletedTodoElement = (item: Todo) => {
 };
 
 // 할 일 목록을 갱신하는 함수
-const renderTodoList = () => {
-  const incomplete = toDoList.filter((item) => !item.completed);
-  const completed = toDoList.filter((item) => item.completed);
+const renderTodoList = (): void => {
+  const incomplete: Todo[] = toDoList.filter((item) => !item.completed);
+  const completed: Todo[] = toDoList.filter((item) => item.completed);
 
   todoList.innerHTML = '';
-  incomplete.forEach((item) => {
-    const todo = createTodoElement(item);
+  incomplete.forEach((item: Todo) => {
+    const todo: HTMLDivElement = createTodoElement(item);
     todoList.appendChild(todo);
   });
 
   completedList.innerHTML = '';
-  completed.forEach((item) => {
-    const todo = createTodoElement(item);
+  completed.forEach((item: Todo) => {
+    const todo: HTMLDivElement = createTodoElement(item);
     completedList.appendChild(todo);
   });
 
   deletedList.innerHTML = '';
-  deletedToDoList.forEach((item) => {
-    const todo = deletedTodoElement(item);
+  deletedToDoList.forEach((item: Todo) => {
+    const todo: HTMLDivElement = deletedTodoElement(item);
     deletedList.appendChild(todo);
   });
 };
 
 // 중복되지 않는 id 값을 생성하기 위한 함수
 const getId = (): number => {
-  let id = Number(localStorage.getItem('id') ?? 0);
+  let id: number = Number(localStorage.getItem('id') ?? 0);
   id++;
 
   localStorage.setItem('id', id.toString());
