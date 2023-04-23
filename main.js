@@ -219,6 +219,26 @@ var deleteAllTodoList = function () {
     }
     return;
 };
+// 완료된 할일 목록을 삭제하는 함수
+var deleteCompletedTodoList = function () {
+    var completedTodoList = toDoList.filter(function (item) { return item.completed; });
+    if (completedTodoList.length < 1)
+        return alert('삭제할 할 일이 없습니다.');
+    if (confirm('완료된 할 일 목록이 전체 삭제됩니다. 정말 삭제하시겠습니까?')) {
+        var uncompletedTodoList = toDoList.filter(function (todo) {
+            if (todo.completed) {
+                deletedToDoList.push(todo);
+            }
+            return !todo.completed;
+        });
+        toDoList = uncompletedTodoList;
+        saveTodo();
+        saveDeletedTodo();
+        renderTodoList();
+        return;
+    }
+    return;
+};
 tabItem.forEach(function (tab) {
     tab.addEventListener('click', handleTabClick);
 });
@@ -228,6 +248,9 @@ buttonBox
     .forEach(function (button) {
     if (button.className === 'all-delete-button') {
         return button.addEventListener('click', deleteAllTodoList);
+    }
+    if (button.className === 'completed-delete-button') {
+        return button.addEventListener('click', deleteCompletedTodoList);
     }
 });
 window.addEventListener('DOMContentLoaded', renderTodoList);

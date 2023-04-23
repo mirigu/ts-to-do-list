@@ -324,6 +324,34 @@ const deleteAllTodoList = (): void => {
   return;
 };
 
+// 완료된 할일 목록을 삭제하는 함수
+const deleteCompletedTodoList = (): void => {
+  const completedTodoList: Todo[] = toDoList.filter(
+    (item: Todo) => item.completed
+  );
+
+  if (completedTodoList.length < 1) return alert('삭제할 할 일이 없습니다.');
+
+  if (confirm('완료된 할 일 목록이 전체 삭제됩니다. 정말 삭제하시겠습니까?')) {
+    const uncompletedTodoList: Todo[] = toDoList.filter((todo: Todo) => {
+      if (todo.completed) {
+        deletedToDoList.push(todo);
+      }
+
+      return !todo.completed;
+    });
+
+    toDoList = uncompletedTodoList;
+
+    saveTodo();
+    saveDeletedTodo();
+    renderTodoList();
+
+    return;
+  }
+  return;
+};
+
 tabItem.forEach((tab: HTMLLIElement): void => {
   tab.addEventListener('click', handleTabClick);
 });
@@ -335,6 +363,9 @@ buttonBox
   .forEach((button: HTMLButtonElement): void => {
     if (button.className === 'all-delete-button') {
       return button.addEventListener('click', deleteAllTodoList);
+    }
+    if (button.className === 'completed-delete-button') {
+      return button.addEventListener('click', deleteCompletedTodoList);
     }
   });
 
