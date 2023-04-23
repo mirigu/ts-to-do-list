@@ -83,11 +83,13 @@ const dateFormat = (date: Date): string => {
 
 // 체크박스 클릭시 실행되는 함수
 const handleCheckChange = (id: string): void => {
-  toDoList.filter((todo: Todo) => {
-    if (todo.id === Number(id)) {
-      return (todo.completed = !todo.completed);
-    }
+  const updatedTodoList: Todo[] = toDoList.map((todo: Todo) => {
+    return todo.id === Number(id)
+      ? { ...todo, completed: !todo.completed }
+      : todo;
   });
+
+  toDoList = updatedTodoList;
 
   saveTodo();
   renderTodoList();
@@ -168,7 +170,7 @@ const updateTodo = (e: Event, todo: HTMLDivElement, id: string): void => {
 };
 
 // 할 일 단일 삭제 함수
-const deleteTodo = (id: string) => {
+const deleteTodo = (id: string): void => {
   if (confirm('할 일이 삭제됩니다. 정말 삭제하시겠습니까?')) {
     const newTodoList: Todo[] = toDoList.filter((todo: Todo) => {
       if (todo.id === Number(id)) {
@@ -182,11 +184,7 @@ const deleteTodo = (id: string) => {
     saveTodo();
     saveDeletedTodo();
     renderTodoList();
-
-    return;
   }
-
-  return;
 };
 
 // 새로운 할 일 요소 생성하는 함수
@@ -321,11 +319,7 @@ const deleteAllTodoList = (): void => {
     saveTodo();
     saveDeletedTodo();
     renderTodoList();
-
-    return;
   }
-
-  return;
 };
 
 // 완료된 할일 목록을 삭제하는 함수

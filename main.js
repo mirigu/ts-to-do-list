@@ -53,11 +53,11 @@ var dateFormat = function (date) {
 };
 // 체크박스 클릭시 실행되는 함수
 var handleCheckChange = function (id) {
-    toDoList.filter(function (todo) {
-        if (todo.id === Number(id)) {
-            return (todo.completed = !todo.completed);
-        }
+    var updatedTodoList = toDoList.map(function (todo) {
+        return todo.id === Number(id)
+            ? __assign(__assign({}, todo), { completed: !todo.completed }) : todo;
     });
+    toDoList = updatedTodoList;
     saveTodo();
     renderTodoList();
 };
@@ -115,9 +115,7 @@ var deleteTodo = function (id) {
         saveTodo();
         saveDeletedTodo();
         renderTodoList();
-        return;
     }
-    return;
 };
 // 새로운 할 일 요소 생성하는 함수
 var createTodoElement = function (_a) {
@@ -208,9 +206,7 @@ var deleteAllTodoList = function () {
         saveTodo();
         saveDeletedTodo();
         renderTodoList();
-        return;
     }
-    return;
 };
 // 완료된 할일 목록을 삭제하는 함수
 var deleteCompletedTodoList = function () {
