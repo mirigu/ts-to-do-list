@@ -51,28 +51,32 @@ const handleTabClick = (event: MouseEvent): void => {
 
 // Date를 YYYY-MM-dd HH:mm:ss 으로 변환하는 함수
 const dateFormat = (date: Date): string => {
-  const prependZero = (num: number): number | string => {
-    // 숫자가 한자릿수인 경우, 앞자리에 0을 붙이는 함수
-    if (num < 10) {
-      return `0${num}`;
-    }
+  // 숫자가 한자릿수인 경우, 앞자리에 0을 붙이는 함수
+  const prependZero = (num: number): string =>
+    num < 10 ? `0${num}` : String(num);
 
-    return num;
+  const {
+    year,
+    month,
+    day,
+    hour,
+    minutes,
+    seconds,
+  }: {
+    year: number;
+    month: string;
+    day: string;
+    hour: string;
+    minutes: string;
+    seconds: string;
+  } = {
+    year: date.getFullYear(),
+    month: prependZero(date.getMonth() + 1),
+    day: prependZero(date.getDay()),
+    hour: prependZero(date.getHours()),
+    minutes: prependZero(date.getMinutes()),
+    seconds: prependZero(date.getSeconds()),
   };
-
-  const [year, month, day]: (string | number)[] = [
-    // 연도, 월, 일
-    date.getFullYear(),
-    prependZero(date.getMonth() + 1),
-    prependZero(date.getDay()),
-  ];
-
-  const [hour, minutes, seconds]: (string | number)[] = [
-    // 시, 분, 초
-    prependZero(date.getHours()),
-    prependZero(date.getMinutes()),
-    prependZero(date.getSeconds()),
-  ];
 
   return `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`;
 };

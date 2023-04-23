@@ -37,25 +37,18 @@ var handleTabClick = function (event) {
 };
 // Date를 YYYY-MM-dd HH:mm:ss 으로 변환하는 함수
 var dateFormat = function (date) {
+    // 숫자가 한자릿수인 경우, 앞자리에 0을 붙이는 함수
     var prependZero = function (num) {
-        // 숫자가 한자릿수인 경우, 앞자리에 0을 붙이는 함수
-        if (num < 10) {
-            return "0".concat(num);
-        }
-        return num;
+        return num < 10 ? "0".concat(num) : String(num);
     };
-    var _a = [
-        // 연도, 월, 일
-        date.getFullYear(),
-        prependZero(date.getMonth() + 1),
-        prependZero(date.getDay()),
-    ], year = _a[0], month = _a[1], day = _a[2];
-    var _b = [
-        // 시, 분, 초
-        prependZero(date.getHours()),
-        prependZero(date.getMinutes()),
-        prependZero(date.getSeconds()),
-    ], hour = _b[0], minutes = _b[1], seconds = _b[2];
+    var _a = {
+        year: date.getFullYear(),
+        month: prependZero(date.getMonth() + 1),
+        day: prependZero(date.getDay()),
+        hour: prependZero(date.getHours()),
+        minutes: prependZero(date.getMinutes()),
+        seconds: prependZero(date.getSeconds()),
+    }, year = _a.year, month = _a.month, day = _a.day, hour = _a.hour, minutes = _a.minutes, seconds = _a.seconds;
     return "".concat(year, "-").concat(month, "-").concat(day, " ").concat(hour, ":").concat(minutes, ":").concat(seconds);
 };
 // 체크박스 클릭시 실행되는 함수
