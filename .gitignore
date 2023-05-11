@@ -1,6 +1,2 @@
-__pycache__/
-.idea/
-.ipynb_checkpoints/
-.venv
-env/
-venv/
+node_modules/
+public/js/
